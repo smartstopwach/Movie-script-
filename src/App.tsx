@@ -16,6 +16,7 @@ interface SavedStory {
   author: string;
   genre: GenreType;
   elements: ScriptElement[];
+  characters: string[];
   notes: string;
 }
 
@@ -119,6 +120,35 @@ export function App() {
       })
     );
   };
+  const [newCharName, setNewCharName] = useState('');
+  const characters = currentStory.characters || ['AARAV', 'MEERA'];
+
+  const addCharacter = () => {
+    const clean = newCharName.trim().toUpperCase();
+    if (!clean || characters.includes(clean)) return;
+    updateStory({ characters: [...characters, clean] });
+    setNewCharName('');
+  };
+
+  const insertCharacterDialogue = (charName: string) => {
+    const charId = uid();
+    const dlgId = uid();
+    const afterId = activeId || elements[elements.length - 1]?.id || '';
+    setElements((prev) => {
+      const idx = prev.findIndex((e) => e.id === afterId);
+      const next = [...prev];
+      next.splice(
+        idx === -1 ? next.length : idx + 1,
+        0,
+        { id: charId, type: 'character', text: charName },
+        { id: dlgId, type: 'dialogue', text: '' }
+      );
+      return next;
+    });
+    setActiveId(dlgId);
+    setTimeout(() => inputRefs.current[dlgId]?.focus(), 10);
+  };
+
   const setNotes = (n: string) => updateStory({ notes: n });
 
   const createNewStory = () => {
@@ -133,6 +163,7 @@ export function App() {
         { id: uid(), type: 'scene', text: 'INT. LOCATION - DAY' },
         { id: uid(), type: 'action', text: '' },
       ],
+      characters: ['HERO', 'FRIEND'],
       notes: 'Research & ideas for this story...',
     };
     setStories((prev) => [newStory, ...prev]);
@@ -376,6 +407,53 @@ export function App() {
                   }}
                 >
                   {i + 1}. {sc.text || 'UNTITLED SCENE'}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Characters Quick-Click */}
+          <div>
+            <div style={labelStyle}>Characters (Click to Speak)</div>
+            <div style={{ display: 'flex', gap: 4, marginTop: 8 }}>
+              <input
+                value={newCharName}
+                onChange={(e) => setNewCharName(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && addCharacter()}
+                placeholder="Add name..."
+                style={{
+                  flex: 1,
+                  padding: '5px 8px',
+                  borderRadius: 6,
+                  border: '1px solid var(--border)',
+                  background: 'var(--bg-app)',
+                  color: 'var(--text-primary)',
+                  fontSize: 12,
+                  outline: 'none',
+                }}
+              />
+              <button onClick={addCharacter} style={btnStyle('secondary')}>
+                <Plus size={13} />
+              </button>
+            </div>
+            <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap', marginTop: 8 }}>
+              {characters.map((c) => (
+                <button
+                  key={c}
+                  onClick={() => insertCharacterDialogue(c)}
+                  style={{
+                    padding: '4px 9px',
+                    borderRadius: 999,
+                    border: '1px solid var(--accent)',
+                    background: 'var(--accent-soft)',
+                    color: 'var(--accent)',
+                    fontSize: 11,
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                  }}
+                  title={`Insert ${c} + Dialogue`}
+                >
+                  {c}
                 </button>
               ))}
             </div>
