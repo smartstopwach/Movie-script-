@@ -175,6 +175,19 @@ export function App() {
     return (localStorage.getItem(THEME_KEY) as ThemeMode) || 'paper';
   });
 
+  const [lang, setLang] = useState<'en' | 'hi'>('en');
+  const t = {
+    newBtn: lang === 'hi' ? 'नई कहानी' : 'New',
+    pdf: lang === 'hi' ? 'पीडीएफ' : 'PDF',
+    saveTxt: lang === 'hi' ? 'सेव .txt' : 'Save .txt',
+    scenes: lang === 'hi' ? 'सीन' : 'Scenes',
+    characters: lang === 'hi' ? 'किरदार (क्लिक करें)' : 'Characters (Click to Speak)',
+    addName: lang === 'hi' ? 'नाम जोड़ें...' : 'Add name...',
+    research: lang === 'hi' ? 'रिसर्च और नोट्स' : 'Research & Notes',
+    addLine: lang === 'hi' ? 'नई लाइन जोड़ें' : 'Add Line',
+    writtenBy: lang === 'hi' ? 'लेखक:' : 'Written by',
+  };
+
   const [activeId, setActiveId] = useState<string>(() => elements[0]?.id || '');
   const inputRefs = useRef<Record<string, HTMLTextAreaElement | null>>({});
 
@@ -367,6 +380,13 @@ export function App() {
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <button
+            onClick={() => setLang(lang === 'en' ? 'hi' : 'en')}
+            style={btnStyle('secondary')}
+            title="Switch English / Hindi"
+          >
+            {lang === 'en' ? 'हिं / EN' : 'EN / हिं'}
+          </button>
+          <button
             onClick={() => setTheme(theme === 'cinema' ? 'paper' : 'cinema')}
             style={btnStyle('secondary')}
             title="Switch Light / Dark"
@@ -375,11 +395,11 @@ export function App() {
           </button>
           <button onClick={() => window.print()} style={btnStyle('secondary')}>
             <Printer size={15} />
-            <span>PDF</span>
+            <span>{t.pdf}</span>
           </button>
           <button onClick={downloadScript} style={btnStyle('primary')}>
             <Download size={15} />
-            <span>Save .txt</span>
+            <span>{t.saveTxt}</span>
           </button>
         </div>
       </header>
@@ -402,7 +422,7 @@ export function App() {
           }}
         >
           <div>
-            <div style={labelStyle}>Scenes ({scenes.length})</div>
+            <div style={labelStyle}>{t.scenes} ({scenes.length})</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 8 }}>
               {scenes.map((sc, i) => (
                 <button
@@ -437,13 +457,13 @@ export function App() {
 
           {/* Characters Quick-Click */}
           <div>
-            <div style={labelStyle}>Characters (Click to Speak)</div>
+            <div style={labelStyle}>{t.characters}</div>
             <div style={{ display: 'flex', gap: 4, marginTop: 8 }}>
               <input
                 value={newCharName}
                 onChange={(e) => setNewCharName(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && addCharacter()}
-                placeholder="Add name..."
+                placeholder={t.addName}
                 style={{
                   flex: 1,
                   padding: '5px 8px',
@@ -483,7 +503,7 @@ export function App() {
           </div>
 
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-            <div style={labelStyle}>Research & Notes</div>
+            <div style={labelStyle}>{t.research}</div>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
@@ -631,7 +651,7 @@ export function App() {
                   }}
                 />
                 <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
-                  Written by{' '}
+                  {t.writtenBy}{' '}
                   <input
                     value={author}
                     onChange={(e) => setAuthor(e.target.value)}
@@ -677,7 +697,7 @@ export function App() {
                   }
                   style={btnStyle('secondary')}
                 >
-                  <Plus size={14} /> Add Line
+                  <Plus size={14} /> {t.addLine}
                 </button>
               </div>
             </div>
