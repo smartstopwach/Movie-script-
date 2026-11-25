@@ -708,15 +708,23 @@ function btnStyle(variant: 'primary' | 'secondary'): React.CSSProperties {
   return {
     display: 'inline-flex',
     alignItems: 'center',
-    gap: 5,
-    padding: '6px 10px',
-    borderRadius: 7,
+    gap: 6,
+    padding: '7px 13px',
+    borderRadius: 9,
     border: variant === 'primary' ? 'none' : '1px solid var(--border)',
-    background: variant === 'primary' ? 'var(--accent)' : 'var(--bg-app)',
+    background:
+      variant === 'primary'
+        ? 'linear-gradient(135deg, var(--accent), #d97706)'
+        : 'var(--bg-app)',
     color: variant === 'primary' ? '#ffffff' : 'var(--text-primary)',
     fontSize: 12,
     fontWeight: 600,
     cursor: 'pointer',
+    boxShadow:
+      variant === 'primary'
+        ? '0 2px 10px rgba(217, 119, 6, 0.28)'
+        : '0 1px 2px rgba(0,0,0,0.06)',
+    transition: 'all 0.15s ease',
   };
 }
 
