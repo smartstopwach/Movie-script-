@@ -105,6 +105,7 @@ body,
   width: 100%;
   background: transparent;
   border: none;
+  border-left: 2px solid transparent;
   outline: none;
   resize: none;
   overflow: hidden;
@@ -112,13 +113,14 @@ body,
   font-size: inherit;
   line-height: inherit;
   color: inherit;
-  padding: 2px 4px;
-  border-radius: 4px;
-  transition: background 0.12s ease;
+  padding: 3px 8px;
+  border-radius: 0 4px 4px 0;
+  transition: border-color 0.15s ease, background 0.15s ease;
 }
 
 .sp-textarea:focus {
   background: var(--accent-soft);
+  border-left-color: var(--accent);
 }
 
 /* Element-specific industry-standard formatting */
