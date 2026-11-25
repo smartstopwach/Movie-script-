@@ -195,34 +195,13 @@ export function App() {
     localStorage.setItem(THEME_KEY, theme);
   }, [theme]);
 
-  const [savedNotice, setSavedNotice] = useState('Saved ✓');
-  const [lastSavedTime, setLastSavedTime] = useState(() =>
-    new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-  );
-
-  const estimatedMinutes = useMemo(() => {
-    const words = elements.reduce(
-      (acc, el) => acc + (el.text.trim() ? el.text.trim().split(/\s+/).length : 0),
-      0
-    );
-    return Math.max(1, Math.ceil(words / 180));
-  }, [elements]);
-
   useEffect(() => {
-    setSavedNotice('Saving...');
-    const t = setTimeout(() => {
-      try {
-        localStorage.setItem(STORIES_KEY, JSON.stringify(stories));
-        localStorage.setItem(ACTIVE_STORY_KEY, currentStory.id);
-        setSavedNotice('Saved ✓');
-        setLastSavedTime(
-          new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        );
-      } catch {
-        setSavedNotice('Storage full');
-      }
-    }, 200);
-    return () => clearTimeout(t);
+    try {
+      localStorage.setItem(STORIES_KEY, JSON.stringify(stories));
+      localStorage.setItem(ACTIVE_STORY_KEY, currentStory.id);
+    } catch {
+      // ignore
+    }
   }, [stories, currentStory.id]);
 
   useEffect(() => {
@@ -357,18 +336,6 @@ export function App() {
             style={{ width: 28, height: 28, borderRadius: 6, objectFit: 'cover' }}
           />
           <strong style={{ fontSize: 15 }}>Movie Script Writer</strong>
-          <span
-            style={{
-              fontSize: 11,
-              fontWeight: 600,
-              color: 'var(--accent)',
-              background: 'var(--accent-soft)',
-              padding: '2px 8px',
-              borderRadius: 999,
-            }}
-          >
-            {savedNotice} ({lastSavedTime}) • ~{estimatedMinutes} min
-          </span>
           <select
             value={currentStory.id}
             onChange={(e) => {
