@@ -10,8 +10,17 @@ import {
 import { ElementType, GenreType, ScriptElement, ThemeMode } from './types';
 import { createProjectFromGenre, GENRE_LIST, uid } from './templates';
 
-const STORAGE_KEY = 'simple_movie_script_v1';
-const NOTES_KEY = 'simple_movie_notes_v1';
+interface SavedStory {
+  id: string;
+  title: string;
+  author: string;
+  genre: GenreType;
+  elements: ScriptElement[];
+  notes: string;
+}
+
+const STORIES_KEY = 'simple_movie_stories_v1';
+const ACTIVE_STORY_KEY = 'simple_movie_active_story_v1';
 const THEME_KEY = 'movie_script_writer_theme_v1';
 
 const ELEMENT_ORDER: ElementType[] = [
@@ -50,25 +59,86 @@ function getNextType(current: ElementType): ElementType {
 }
 
 export function App() {
-  const [title, setTitle] = useState('THE LAST TRAIN TO VARANASI');
-  const [author, setAuthor] = useState('Screenwriter');
-  const [genre, setGenre] = useState<GenreType>('Romance / Drama');
-  const [elements, setElements] = useState<ScriptElement[]>(() => {
+  const [stories, setStories] = useState<SavedStory[]>(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) return JSON.parse(saved);
+      const saved = localStorage.getItem(STORIES_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
     } catch {
       // ignore
     }
-    return createProjectFromGenre('Romance / Drama', 'THE LAST TRAIN TO VARANASI').elements;
+    const demo = createProjectFromGenre('Romance / Drama', 'THE LAST TRAIN TO VARANASI');
+    return [
+      {
+        id: demo.id,
+        title: demo.title,
+        author: demo.author,
+        genre: demo.genre,
+        elements: demo.elements,
+        notes:
+          'RESEARCH & IDEAS:\n• Location: Varanasi Junction at midnight, monsoon rain.\n• Character: Aarav (28) & Meera (26) meeting after 5 years.\n• Tone: Warm, nostalgic, cinematic.',
+      },
+    ];
   });
 
-  const [notes, setNotes] = useState<string>(() => {
-    return (
-      localStorage.getItem(NOTES_KEY) ||
-      'RESEARCH & IDEAS:\n• Location: Varanasi Junction at midnight, monsoon rain.\n• Character: Aarav (28) & Meera (26) meeting after 5 years.\n• Tone: Warm, nostalgic, cinematic.'
-    );
+  const [activeStoryId, setActiveStoryId] = useState<string>(() => {
+    return localStorage.getItem(ACTIVE_STORY_KEY) || stories[0].id;
   });
+
+  const currentStory = useMemo(
+    () => stories.find((s) => s.id === activeStoryId) || stories[0],
+    [stories, activeStoryId]
+  );
+
+  const title = currentStory.title;
+  const author = currentStory.author;
+  const genre = currentStory.genre;
+  const elements = currentStory.elements;
+  const notes = currentStory.notes;
+
+  const updateStory = (patch: Partial<SavedStory>) => {
+    setStories((prev) =>
+      prev.map((s) => (s.id === currentStory.id ? { ...s, ...patch } : s))
+    );
+  };
+
+  const setTitle = (t: string) => updateStory({ title: t });
+  const setAuthor = (a: string) => updateStory({ author: a });
+  const setGenre = (g: GenreType) => updateStory({ genre: g });
+  const setElements = (
+    updater: ScriptElement[] | ((prev: ScriptElement[]) => ScriptElement[])
+  ) => {
+    setStories((prev) =>
+      prev.map((s) => {
+        if (s.id !== currentStory.id) return s;
+        const nextElements =
+          typeof updater === 'function' ? updater(s.elements) : updater;
+        return { ...s, elements: nextElements };
+      })
+    );
+  };
+  const setNotes = (n: string) => updateStory({ notes: n });
+
+  const createNewStory = () => {
+    const newTitle = `UNTITLED STORY ${stories.length + 1}`;
+    const newStory: SavedStory = {
+      id: uid(),
+      title: newTitle,
+      author: 'Screenwriter',
+      genre: 'Feature Film',
+      elements: [
+        { id: uid(), type: 'transition', text: 'FADE IN:' },
+        { id: uid(), type: 'scene', text: 'INT. LOCATION - DAY' },
+        { id: uid(), type: 'action', text: '' },
+      ],
+      notes: 'Research & ideas for this story...',
+    };
+    setStories((prev) => [newStory, ...prev]);
+    setActiveStoryId(newStory.id);
+    setActiveId(newStory.elements[0].id);
+  };
 
   const [theme, setTheme] = useState<ThemeMode>(() => {
     return (localStorage.getItem(THEME_KEY) as ThemeMode) || 'paper';
@@ -83,12 +153,9 @@ export function App() {
   }, [theme]);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(elements));
-  }, [elements]);
-
-  useEffect(() => {
-    localStorage.setItem(NOTES_KEY, notes);
-  }, [notes]);
+    localStorage.setItem(STORIES_KEY, JSON.stringify(stories));
+    localStorage.setItem(ACTIVE_STORY_KEY, currentStory.id);
+  }, [stories, currentStory.id]);
 
   useEffect(() => {
     Object.values(inputRefs.current).forEach((el) => {
@@ -196,6 +263,34 @@ export function App() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <Clapperboard size={20} color="var(--accent)" />
           <strong style={{ fontSize: 15 }}>Movie Script Writer</strong>
+          <select
+            value={currentStory.id}
+            onChange={(e) => {
+              setActiveStoryId(e.target.value);
+              const found = stories.find((s) => s.id === e.target.value);
+              if (found) setActiveId(found.elements[0]?.id || '');
+            }}
+            style={{
+              background: 'var(--bg-app)',
+              color: 'var(--text-primary)',
+              border: '1px solid var(--border)',
+              borderRadius: 6,
+              padding: '4px 8px',
+              fontSize: 12,
+              maxWidth: 180,
+            }}
+            title="Switch Story"
+          >
+            {stories.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.title}
+              </option>
+            ))}
+          </select>
+          <button onClick={createNewStory} style={btnStyle('secondary')} title="New Story">
+            <Plus size={14} />
+            <span>New</span>
+          </button>
           <select
             value={genre}
             onChange={(e) => setGenre(e.target.value as GenreType)}
