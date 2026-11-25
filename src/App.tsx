@@ -168,7 +168,7 @@ export function App() {
         { id: uid(), type: 'scene', text: 'INT. LOCATION - DAY' },
         { id: uid(), type: 'action', text: '' },
       ],
-      characters: ['HERO', 'FRIEND'],
+      characters: [],
       notes: 'Research & ideas for this story...',
     };
     setStories((prev) => [newStory, ...prev]);
