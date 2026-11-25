@@ -464,7 +464,17 @@ export function App() {
           {/* Characters Quick-Click */}
           <div>
             <div style={labelStyle}>{t.characters}</div>
-            <div style={{ display: 'flex', gap: 4, marginTop: 8 }}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                marginTop: 8,
+                borderRadius: 8,
+                border: '1px solid var(--border)',
+                background: 'var(--bg-app)',
+                overflow: 'hidden',
+              }}
+            >
               <input
                 value={newCharName}
                 onChange={(e) => setNewCharName(e.target.value)}
@@ -472,38 +482,91 @@ export function App() {
                 placeholder={t.addName}
                 style={{
                   flex: 1,
-                  padding: '5px 8px',
-                  borderRadius: 6,
-                  border: '1px solid var(--border)',
-                  background: 'var(--bg-app)',
+                  minWidth: 0,
+                  padding: '7px 10px',
+                  border: 'none',
+                  background: 'transparent',
                   color: 'var(--text-primary)',
                   fontSize: 12,
                   outline: 'none',
                 }}
               />
-              <button onClick={addCharacter} style={btnStyle('secondary')}>
-                <Plus size={13} />
+              <button
+                onClick={addCharacter}
+                style={{
+                  padding: '7px 10px',
+                  border: 'none',
+                  borderLeft: '1px solid var(--border)',
+                  background: 'var(--bg-hover)',
+                  color: 'var(--accent)',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+                title="Add Character"
+              >
+                <Plus size={14} />
               </button>
             </div>
-            <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap', marginTop: 8 }}>
+            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 10 }}>
               {characters.map((c) => (
-                <button
+                <div
                   key={c}
-                  onClick={() => insertCharacterDialogue(c)}
                   style={{
-                    padding: '4px 9px',
-                    borderRadius: 999,
-                    border: '1px solid var(--accent)',
-                    background: 'var(--accent-soft)',
-                    color: 'var(--accent)',
-                    fontSize: 11,
-                    fontWeight: 700,
-                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    borderRadius: 8,
+                    border: '1px solid var(--border)',
+                    background: 'var(--bg-app)',
+                    overflow: 'hidden',
                   }}
-                  title={`Insert ${c} + Dialogue`}
                 >
-                  {c}
-                </button>
+                  <button
+                    onClick={() => insertCharacterDialogue(c)}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 6,
+                      padding: '5px 9px',
+                      border: 'none',
+                      background: 'transparent',
+                      color: 'var(--text-primary)',
+                      fontSize: 11,
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                    }}
+                    title={`Insert ${c} + Dialogue`}
+                  >
+                    <span
+                      style={{
+                        width: 6,
+                        height: 6,
+                        borderRadius: '50%',
+                        background: 'var(--accent)',
+                      }}
+                    />
+                    {c}
+                  </button>
+                  <button
+                    onClick={() =>
+                      updateStory({
+                        characters: characters.filter((item) => item !== c),
+                      })
+                    }
+                    style={{
+                      padding: '5px 6px',
+                      border: 'none',
+                      borderLeft: '1px solid var(--border)',
+                      background: 'transparent',
+                      color: 'var(--text-muted)',
+                      fontSize: 11,
+                      cursor: 'pointer',
+                    }}
+                    title="Remove"
+                  >
+                    ×
+                  </button>
+                </div>
               ))}
             </div>
           </div>
