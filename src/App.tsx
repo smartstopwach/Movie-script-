@@ -560,15 +560,16 @@ export function App() {
                       })
                     }
                     style={{
-                      padding: '5px 6px',
+                      padding: '5px 9px',
                       border: 'none',
                       borderLeft: '1px solid var(--border)',
-                      background: 'transparent',
-                      color: 'var(--text-muted)',
-                      fontSize: 11,
+                      background: 'var(--bg-hover)',
+                      color: 'var(--text-secondary)',
+                      fontSize: 13,
+                      fontWeight: 700,
                       cursor: 'pointer',
                     }}
-                    title="Remove"
+                    title="Remove character"
                   >
                     ×
                   </button>
