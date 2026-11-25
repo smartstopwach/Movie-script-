@@ -197,6 +197,17 @@ export function App() {
   }, [theme]);
 
   const [savedNotice, setSavedNotice] = useState('Saved ✓');
+  const [lastSavedTime, setLastSavedTime] = useState(() =>
+    new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  );
+
+  const estimatedMinutes = useMemo(() => {
+    const words = elements.reduce(
+      (acc, el) => acc + (el.text.trim() ? el.text.trim().split(/\s+/).length : 0),
+      0
+    );
+    return Math.max(1, Math.ceil(words / 180));
+  }, [elements]);
 
   useEffect(() => {
     setSavedNotice('Saving...');
@@ -205,6 +216,9 @@ export function App() {
         localStorage.setItem(STORIES_KEY, JSON.stringify(stories));
         localStorage.setItem(ACTIVE_STORY_KEY, currentStory.id);
         setSavedNotice('Saved ✓');
+        setLastSavedTime(
+          new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        );
       } catch {
         setSavedNotice('Storage full');
       }
@@ -328,7 +342,7 @@ export function App() {
               borderRadius: 999,
             }}
           >
-            {savedNotice}
+            {savedNotice} ({lastSavedTime}) • ~{estimatedMinutes} min
           </span>
           <select
             value={currentStory.id}
