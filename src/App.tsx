@@ -419,38 +419,86 @@ export function App() {
               background: 'var(--bg-panel)',
               borderBottom: '1px solid var(--border)',
               display: 'flex',
-              justifyContent: 'center',
+              flexDirection: 'column',
+              alignItems: 'center',
               gap: 6,
-              flexWrap: 'wrap',
             }}
           >
-            {ELEMENT_ORDER.map((type) => {
-              const active = activeElement?.type === type;
-              return (
-                <button
-                  key={type}
-                  onClick={() => {
-                    if (activeElement) {
-                      updateElement(activeElement.id, { type });
+            <div style={{ display: 'flex', justifyContent: 'center', gap: 6, flexWrap: 'wrap' }}>
+              {ELEMENT_ORDER.map((type) => {
+                const active = activeElement?.type === type;
+                return (
+                  <button
+                    key={type}
+                    onClick={() => {
+                      if (activeElement) {
+                        updateElement(activeElement.id, { type });
+                        inputRefs.current[activeElement.id]?.focus();
+                      }
+                    }}
+                    style={{
+                      padding: '5px 10px',
+                      borderRadius: 6,
+                      border: '1px solid',
+                      borderColor: active ? 'var(--accent)' : 'var(--border)',
+                      background: active ? 'var(--accent-soft)' : 'transparent',
+                      color: active ? 'var(--accent)' : 'var(--text-secondary)',
+                      fontSize: 12,
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    {ELEMENT_LABELS[type]}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Easy Quick-Insert Chips while typing */}
+            <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap', alignItems: 'center' }}>
+              {activeElement?.type === 'scene' &&
+                ['INT. ', 'EXT. ', ' - DAY', ' - NIGHT'].map((chip) => (
+                  <button
+                    key={chip}
+                    onClick={() => {
+                      updateElement(activeElement.id, { text: activeElement.text + chip });
                       inputRefs.current[activeElement.id]?.focus();
-                    }
-                  }}
-                  style={{
-                    padding: '5px 10px',
-                    borderRadius: 6,
-                    border: '1px solid',
-                    borderColor: active ? 'var(--accent)' : 'var(--border)',
-                    background: active ? 'var(--accent-soft)' : 'transparent',
-                    color: active ? 'var(--accent)' : 'var(--text-secondary)',
-                    fontSize: 12,
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                  }}
-                >
-                  {ELEMENT_LABELS[type]}
-                </button>
-              );
-            })}
+                    }}
+                    style={chipStyle}
+                  >
+                    +{chip.trim()}
+                  </button>
+                ))}
+              {activeElement?.type === 'character' &&
+                [' (V.O.)', ' (O.S.)', " (CONT'D)"].map((chip) => (
+                  <button
+                    key={chip}
+                    onClick={() => {
+                      updateElement(activeElement.id, { text: activeElement.text + chip });
+                      inputRefs.current[activeElement.id]?.focus();
+                    }}
+                    style={chipStyle}
+                  >
+                    +{chip.trim()}
+                  </button>
+                ))}
+              {activeElement?.type === 'transition' &&
+                ['CUT TO:', 'FADE IN:', 'FADE OUT.', 'DISSOLVE TO:'].map((chip) => (
+                  <button
+                    key={chip}
+                    onClick={() => {
+                      updateElement(activeElement.id, { text: chip });
+                      inputRefs.current[activeElement.id]?.focus();
+                    }}
+                    style={chipStyle}
+                  >
+                    {chip}
+                  </button>
+                ))}
+              <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
+                Enter = Next line • Tab = Switch format
+              </span>
+            </div>
           </div>
 
           {/* Paper */}
@@ -561,6 +609,17 @@ const labelStyle: React.CSSProperties = {
   textTransform: 'uppercase',
   letterSpacing: '0.05em',
   color: 'var(--text-muted)',
+};
+
+const chipStyle: React.CSSProperties = {
+  fontSize: 11,
+  fontWeight: 600,
+  padding: '2px 8px',
+  borderRadius: 999,
+  border: '1px solid var(--border)',
+  background: 'var(--bg-app)',
+  color: 'var(--text-secondary)',
+  cursor: 'pointer',
 };
 
 export default App;
