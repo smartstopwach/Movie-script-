@@ -239,10 +239,32 @@ export function App() {
     [elements, activeId]
   );
 
-  const scenes = useMemo(
-    () => elements.filter((e) => e.type === 'scene'),
-    [elements]
-  );
+  const scenes = useMemo(() => {
+    const list: { id: string; text: string; duration: string }[] = [];
+    let currentWords = 0;
+
+    elements.forEach((el) => {
+      const w = el.text.trim() ? el.text.trim().split(/\s+/).length : 0;
+      if (el.type === 'scene') {
+        if (list.length > 0) {
+          const secs = Math.max(15, Math.round((currentWords / 180) * 60));
+          list[list.length - 1].duration =
+            secs >= 60 ? `~${Math.round(secs / 60)}m` : `~${secs}s`;
+        }
+        list.push({ id: el.id, text: el.text, duration: '~15s' });
+        currentWords = w;
+      } else {
+        currentWords += w;
+      }
+    });
+
+    if (list.length > 0) {
+      const secs = Math.max(15, Math.round((currentWords / 180) * 60));
+      list[list.length - 1].duration =
+        secs >= 60 ? `~${Math.round(secs / 60)}m` : `~${secs}s`;
+    }
+    return list;
+  }, [elements]);
 
   const updateElement = (id: string, patch: Partial<ScriptElement>) => {
     setElements((prev) =>
