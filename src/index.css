@@ -1,0 +1,202 @@
+:root {
+  --bg-app: #f3efe6;
+  --bg-panel: #fbf9f4;
+  --bg-page: #fffdf8;
+  --bg-hover: #efe9dc;
+  --bg-active: #e6decb;
+  --border: #e2d9c8;
+  --text-primary: #1f1c18;
+  --text-secondary: #686055;
+  --text-muted: #988f82;
+  --accent: #b45309;
+  --accent-soft: rgba(180, 83, 9, 0.12);
+  --shadow-page: 0 12px 36px rgba(31, 28, 24, 0.08), 0 2px 6px rgba(31, 28, 24, 0.04);
+}
+
+[data-theme='light'] {
+  --bg-app: #f1f3f6;
+  --bg-panel: #ffffff;
+  --bg-page: #ffffff;
+  --bg-hover: #f3f4f6;
+  --bg-active: #e5e7eb;
+  --border: #e2e5ea;
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+  --text-muted: #9ca3af;
+  --accent: #2563eb;
+  --accent-soft: rgba(37, 99, 235, 0.1);
+  --shadow-page: 0 10px 32px rgba(17, 24, 39, 0.07), 0 1px 4px rgba(17, 24, 39, 0.04);
+}
+
+[data-theme='cinema'] {
+  --bg-app: #0c0e13;
+  --bg-panel: #13161e;
+  --bg-page: #181c26;
+  --bg-hover: #1f2430;
+  --bg-active: #282e3d;
+  --border: #262c3a;
+  --text-primary: #eceff4;
+  --text-secondary: #9ca3af;
+  --text-muted: #6b7280;
+  --accent: #f59e0b;
+  --accent-soft: rgba(245, 158, 11, 0.14);
+  --shadow-page: 0 16px 48px rgba(0, 0, 0, 0.45);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-app);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 999px;
+}
+
+/* Screenplay Typography */
+.screenplay-page {
+  font-family: 'Courier Prime', 'Courier New', Courier, monospace;
+  font-size: 15px;
+  line-height: 1.35;
+  background: var(--bg-page);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-page);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  width: 100%;
+  max-width: 816px; /* 8.5in at 96dpi */
+  min-height: 1056px; /* 11in at 96dpi */
+  padding: 72px 72px 84px 96px; /* 1.5in left, 1in right/top/bottom feel */
+  margin: 0 auto 48px auto;
+}
+
+@media (max-width: 768px) {
+  .screenplay-page {
+    padding: 32px 20px 48px 24px;
+    font-size: 14px;
+  }
+}
+
+.sp-block {
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.sp-textarea {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: none;
+  overflow: hidden;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: background 0.12s ease;
+}
+
+.sp-textarea:focus {
+  background: var(--accent-soft);
+}
+
+/* Element-specific industry-standard formatting */
+.sp-scene .sp-textarea {
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-top: 14px;
+  letter-spacing: 0.02em;
+}
+
+.sp-action .sp-textarea {
+  font-weight: 400;
+}
+
+.sp-character {
+  padding-left: 34%;
+  padding-right: 15%;
+  margin-top: 12px;
+  margin-bottom: 2px;
+}
+.sp-character .sp-textarea {
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.sp-parenthetical {
+  padding-left: 26%;
+  padding-right: 22%;
+  margin-bottom: 2px;
+}
+.sp-parenthetical .sp-textarea {
+  font-style: italic;
+}
+
+.sp-dialogue {
+  padding-left: 17%;
+  padding-right: 17%;
+  margin-bottom: 10px;
+}
+
+.sp-transition {
+  text-align: right;
+  margin-top: 10px;
+}
+.sp-transition .sp-textarea {
+  text-align: right;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+/* Print / PDF Export */
+@media print {
+  body,
+  html,
+  #root {
+    background: #ffffff !important;
+    color: #000000 !important;
+    height: auto !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-only-container {
+    display: block !important;
+    overflow: visible !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  .screenplay-page {
+    box-shadow: none !important;
+    border: none !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    max-width: 100% !important;
+    padding: 0.5in 0.75in 0.5in 1in !important;
+    margin: 0 !important;
+  }
+  .sp-textarea:focus {
+    background: transparent !important;
+  }
+}
