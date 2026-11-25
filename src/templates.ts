@@ -106,25 +106,45 @@ export function createProjectFromGenre(genre: GenreType, title?: string): Script
   const cleanTitle = title?.trim() || `UNTITLED ${genre.toUpperCase()}`;
   const sampleElements: ScriptElement[] = [
     { id: uid(), type: 'transition', text: 'FADE IN:' },
-    { id: uid(), type: 'scene', text: 'INT. OLD OBSERVATORY - NIGHT' },
+    { id: uid(), type: 'scene', text: 'EXT. VARANASI RAILWAY STATION - NIGHT' },
     {
       id: uid(),
       type: 'action',
-      text: 'Rain hammers against the cracked glass dome. Dust motes drift through a single beam of moonlight.',
+      text: 'Monsoon rain lashes the empty platform. A single yellow streetlamp flickers over wet tracks. Steam rises from a tea stall.',
     },
     {
       id: uid(),
       type: 'action',
-      text: 'MAYA (30s), sharp-eyed, trench coat soaked, sweeps a flashlight across a mahogany desk.',
+      text: 'AARAV (28), wearing a soaked denim jacket, clutches a battered leather diary. He checks his watch — 11:55 PM.',
     },
-    { id: uid(), type: 'character', text: 'MAYA' },
-    { id: uid(), type: 'parenthetical', text: '(into recorder)' },
+    { id: uid(), type: 'character', text: 'AARAV' },
+    { id: uid(), type: 'parenthetical', text: '(to the tea vendor)' },
     {
       id: uid(),
       type: 'dialogue',
-      text: 'Time is 02:14. The archive was supposed to be empty. It isn’t.',
+      text: 'The 12:05 express... is it still running tonight?',
+    },
+    { id: uid(), type: 'character', text: 'VENDOR' },
+    {
+      id: uid(),
+      type: 'dialogue',
+      text: 'Nothing leaves on time in this rain, brother. Who are you waiting for?',
     },
     { id: uid(), type: 'transition', text: 'CUT TO:' },
+    { id: uid(), type: 'scene', text: 'INT. TRAIN COMPARTMENT - CONTINUOUS' },
+    {
+      id: uid(),
+      type: 'action',
+      text: 'Dim blue light. MEERA (26) sits by the rain-streaked window, staring at an old photograph.',
+    },
+    { id: uid(), type: 'character', text: 'MEERA' },
+    { id: uid(), type: 'parenthetical', text: '(whispering)' },
+    {
+      id: uid(),
+      type: 'dialogue',
+      text: 'Five years, Aarav. Let’s see if you still remember.',
+    },
+    { id: uid(), type: 'transition', text: 'FADE OUT.' },
   ];
 
   return {
