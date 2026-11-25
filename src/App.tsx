@@ -145,7 +145,13 @@ export function App() {
       return next;
     });
     setActiveId(dlgId);
-    setTimeout(() => inputRefs.current[dlgId]?.focus(), 10);
+    setTimeout(() => {
+      const el = inputRefs.current[dlgId];
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.focus();
+      }
+    }, 30);
   };
 
   const setNotes = (n: string) => updateStory({ notes: n });
