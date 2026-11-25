@@ -183,9 +183,20 @@ export function App() {
     localStorage.setItem(THEME_KEY, theme);
   }, [theme]);
 
+  const [savedNotice, setSavedNotice] = useState('Saved ✓');
+
   useEffect(() => {
-    localStorage.setItem(STORIES_KEY, JSON.stringify(stories));
-    localStorage.setItem(ACTIVE_STORY_KEY, currentStory.id);
+    setSavedNotice('Saving...');
+    const t = setTimeout(() => {
+      try {
+        localStorage.setItem(STORIES_KEY, JSON.stringify(stories));
+        localStorage.setItem(ACTIVE_STORY_KEY, currentStory.id);
+        setSavedNotice('Saved ✓');
+      } catch {
+        setSavedNotice('Storage full');
+      }
+    }, 200);
+    return () => clearTimeout(t);
   }, [stories, currentStory.id]);
 
   useEffect(() => {
@@ -294,6 +305,18 @@ export function App() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <Clapperboard size={20} color="var(--accent)" />
           <strong style={{ fontSize: 15 }}>Movie Script Writer</strong>
+          <span
+            style={{
+              fontSize: 11,
+              fontWeight: 600,
+              color: 'var(--accent)',
+              background: 'var(--accent-soft)',
+              padding: '2px 8px',
+              borderRadius: 999,
+            }}
+          >
+            {savedNotice}
+          </span>
           <select
             value={currentStory.id}
             onChange={(e) => {
