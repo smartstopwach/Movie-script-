@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
-  Clapperboard,
   Download,
   Moon,
   Plus,
@@ -330,7 +329,11 @@ export function App() {
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <Clapperboard size={20} color="var(--accent)" />
+          <img
+            src="./logo.png"
+            alt="Movie Script Writer"
+            style={{ width: 28, height: 28, borderRadius: 6, objectFit: 'cover' }}
+          />
           <strong style={{ fontSize: 15 }}>Movie Script Writer</strong>
           <span
             style={{
