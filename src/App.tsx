@@ -551,7 +551,7 @@ export function App() {
               gap: 6,
             }}
           >
-            <div style={{ display: 'flex', justifyContent: 'center', gap: 6, flexWrap: 'wrap' }}>
+            <div className="studio-segment">
               {ELEMENT_ORDER.map((type) => {
                 const active = activeElement?.type === type;
                 return (
@@ -563,17 +563,7 @@ export function App() {
                         inputRefs.current[activeElement.id]?.focus();
                       }
                     }}
-                    style={{
-                      padding: '5px 10px',
-                      borderRadius: 6,
-                      border: '1px solid',
-                      borderColor: active ? 'var(--accent)' : 'var(--border)',
-                      background: active ? 'var(--accent-soft)' : 'transparent',
-                      color: active ? 'var(--accent)' : 'var(--text-secondary)',
-                      fontSize: 12,
-                      fontWeight: 600,
-                      cursor: 'pointer',
-                    }}
+                    className={`studio-segment-btn ${active ? 'active' : ''}`}
                   >
                     {ELEMENT_LABELS[type]}
                   </button>
